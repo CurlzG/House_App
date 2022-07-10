@@ -3,13 +3,27 @@ import { StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-
+import Carousel from '../components/Carousel';
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <Text style={styles.title}>Quick Selection</Text>
+
+
+      <Carousel
+        style='slide'
+        items={[{
+          title: 'View Menu',
+        }, {
+          title: 'Calendar',
+        }, {
+          title: 'Something Later',
+        }]}
+      />
+      <Text style={[styles.title,{paddingTop:20}]}>To do</Text>
+      <View style={{width:'95%',backgroundColor:'grey',height:'40%',borderRadius:35,overflow:'hidden',margin:5,marginLeft:10}}>
+
+      </View>
     </View>
   );
 }
@@ -17,12 +31,14 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'left',
+    paddingLeft:20
   },
   separator: {
     marginVertical: 30,
