@@ -13,7 +13,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       <Carousel
         style='slide'
         items={[{
-          title: 'View Menu',
+          title: ' Food Menu',
         }, {
           title: 'Calendar',
         }, {

@@ -1,17 +1,18 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import { StyleSheet,TouchableHighlight } from 'react-native'
-import Navigation from '../navigation';
-
+import { useNavigation } from '@react-navigation/native';
 export const Slide = (props: any) => {
-
+  const navigation = useNavigation();
   const { title } = props;
-  const click = () => {
-    console.log("hello")
+  function ViewCard(title:any){
+    if(title.includes('Menu')){
+     return navigation.navigate('Menu');
+    }
   }
   return (
     
-    <View style={styles.slide} onTouchEnd={() => {}} >
+    <View style={styles.slide} onTouchEnd={() => {ViewCard(title)}} >
       <Text style={styles.slideText }>
         {title}
       </Text>
