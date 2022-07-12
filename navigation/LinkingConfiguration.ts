@@ -27,7 +27,7 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
           Menu: {
             screens: {
-              MenucScreen: 'two',
+              MenuScreen: 'two',
             },
           },
         },
