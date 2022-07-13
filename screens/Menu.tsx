@@ -1,35 +1,92 @@
-import { StyleSheet,FlatList } from 'react-native';
+import { StyleSheet,FlatList, StatusBar, TouchableOpacity } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { MenuDay } from '../components/MenuDay';
-
-
+import { Dimensions } from 'react-native';
+import React,{ useEffect, useState  } from 'react';
+const scrWidth = Dimensions.get('screen').width;
+const scrHeight = Dimensions.get('screen').height;
 const DATA = [
   {
     Day: 'Monday',
-   
+    Recipe: 'Fish and Chips',
+    DayGone: false
   },
   {
     Day: 'Tuesday',
- 
+    Recipe: 'Pie',
+    DayGone: false
   },
   {
-    Day: 'Wedensday',
-
+    Day: 'Wednesday',
+    Recipe: '???',
+    DayGone: false
+  },
+  {
+    Day: 'Thursday',
+    Recipe: 'Ramen',
+    DayGone: false
+  },
+  {
+    Day: 'Friday',
+    Recipe: 'Takeaways',
+    DayGone: false
+  },
+  {
+    Day: 'Saturday',
+    Recipe: 'Tacos',
+    DayGone: false
+    
+  },
+  {
+    Day: 'Sunday',
+    Recipe: 'Nacho',
+    DayGone: false
   },
 ];
 
 
 export default function Menu() {
+  const [newData, setNewData] = React.useState(DATA);
+  useEffect(()=>{
+    let Day = new Date().getDay();
+    let newCount = 0;
+    let newDataLess = [];
+    let Data = [];
+    for(let i = 0; i < DATA.length;i++){
+      if(i >= (Day-1)){
+        //console.log(DATA[i-1].Day);
+        Data[newCount] = DATA[i]; 
+        newCount++;
+      }
+    if(i < (Day-1)){
+      newDataLess[i] = DATA[i];
+    }
+      
+    }
+    Data = [...Data,...newDataLess];
+    //console.log(Data);
+    setNewData(Data);
+  },[])
   return (
     <View style={styles.container}>
+      <StatusBar/>
+      <View style={{height:scrHeight*0.10,width:'100%',justifyContent:'center',alignItems:'center',marginTop:40}}>
       <Text style={styles.title}>Menu</Text>
-      <FlatList
-        data={DATA}
+      <Text> Click the day, too change the meal for that night</Text>
+      </View>
+      <FlatList style={styles.card}
+        data={newData}
+        numColumns={1}
+        showsVerticalScrollIndicator={false}
+
+  showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 40 }}
         renderItem={({item}) =>{
           return(
-            <MenuDay Day={item.Day}/>
+         
+            <MenuDay Day={item.Day} Recipe={item.Recipe} Data={newData}/>
           );
         }}
         keyExtractor={item => item.Day}/>
@@ -43,11 +100,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding:20,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  card:{
+    flexDirection: 'column',
+    padding:20,
+    flex:1,
+    height:scrHeight*0.90,
+
   },
   separator: {
     marginVertical: 30,
