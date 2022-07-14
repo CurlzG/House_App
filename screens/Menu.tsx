@@ -48,8 +48,22 @@ const DATA = [
 
 
 export default function Menu() {
-  const [newData, setNewData] = React.useState(DATA);
+  const [newData, setNewData] = useState(DATA);
+  const [state, updateState] = React.useState({});
+  const forceUpdate = React.useCallback(() => updateState({}), []);
+
+  const updateMenu = (Menu:any) => {
+    console.log("Update Menu");
+    setNewData(Menu);
+    console.log(newData);
+    forceUpdate();
+    //return setNewData(Menu);
+  }
+
+  
   useEffect(()=>{
+    
+    //console.log("Nope");
     let Day = new Date().getDay();
     let newCount = 0;
     let newDataLess = [];
@@ -80,13 +94,12 @@ export default function Menu() {
         data={newData}
         numColumns={1}
         showsVerticalScrollIndicator={false}
-
-  showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
         renderItem={({item}) =>{
           return(
          
-            <MenuDay Day={item.Day} Recipe={item.Recipe} Data={newData}/>
+            <MenuDay Day={item.Day} Recipe={item.Recipe} handleCallBack={updateMenu} MenuData={newData}/>
           );
         }}
         keyExtractor={item => item.Day}/>

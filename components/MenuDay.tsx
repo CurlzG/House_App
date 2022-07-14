@@ -4,13 +4,14 @@ import { StyleSheet,TouchableHighlight,TouchableOpacity,Modal,Pressable } from '
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { TextInput } from 'react-native-paper';
+import Menu from '../screens/Menu';
 export const MenuDay = (props: any) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [text, setText] = React.useState("");
   const [SuggestionRecipe,setSuggestionRecipe] = React.useState("---");
   const [SuggestedConfirmed,setSuggestedConfirmed] = React.useState("---");
   const navigation = useNavigation();
-  const { Day,Recipe } = props;
+  const { Day,Recipe,MenuData,handleCallBack } = props;
   const scrWidth = Dimensions.get('screen').width;
   const scrHeight = Dimensions.get('screen').height;
   const DATA = [
@@ -59,29 +60,26 @@ export const MenuDay = (props: any) => {
 
   function updateSuggestion(text:string){
     let Select = "";  
-    let score = [...text];
+    let score = [];
     let count = 0;
-    console.log(score);
-    for(let i = 0; i < DATA.length; i++){
-          console.log(DATA[i].Recipe);
-          Array.prototype.map.call(DATA[i].Recipe, eachLetter => {
-            count==0; 
-            for(let j = 0; j < score.length; j++){
-              if(score[j] == eachLetter[j]){
-                console.log(eachLetter[j])
-                count++;
-                if(count == score.length){
-                  console.log('-->' + DATA[i].Recipe)
-                  setSuggestionRecipe(DATA[i].Recipe);
-                  break;
-                }
-              } 
-              
-            }
-            //console.log(eachLetter)
-          });
-          //console.log(DATA[i].Recipe);
+
+    for(let i = 0; i < DATA.length;i++){
+      if(DATA[i].Recipe.includes(text)){
+        score[count] = DATA[i].Recipe;
+        count++;
       }
+      let short = 100;
+      let answer = "";
+      for(let j = 0; j < score.length;j++){
+        if(short >= score[j].length){
+          short = score[j].length;
+          answer = score[j];
+        }
+      }
+      setSuggestionRecipe(answer);
+
+    }
+
   }
   return (
     <View> 
@@ -91,7 +89,6 @@ export const MenuDay = (props: any) => {
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-
         setModalVisible(!modalVisible);
       }}
     >
@@ -105,14 +102,23 @@ export const MenuDay = (props: any) => {
       value={text}
       onChangeText={text => {setText(text);updateSuggestion(text)}}
     />
-    <View style={{height:scrHeight*0.1}}>
-    <Text style={{padding:20,fontWeight:'bold'}}> is it <Text onPress={() => {setSuggestedConfirmed(SuggestionRecipe)}}>  {SuggestionRecipe} </Text> </Text>
-    <Text> Selected: {SuggestedConfirmed}</Text>
+    <View style={{height:scrHeight*0.2}}>
+    <Text style={{padding:20}}> is it <Text style={{fontSize:20,fontWeight:'bold'}} onPress={() => {setSuggestedConfirmed(SuggestionRecipe)}}>  {SuggestionRecipe} </Text> </Text>
+    <Text style={{fontWeight:'bold'}}> Selected: {SuggestedConfirmed}</Text>
     </View>
     <View style={{flexDirection:'row',}}>
           <Pressable
             style={[styles.button, styles.buttonClose]}
-            onPress={() => setModalVisible(!modalVisible)}
+            onPress={() => {
+              for(let i = 0;i < MenuData.length; i++){
+                if(MenuData[i].Day == Day){
+                    MenuData[i].Recipe = SuggestedConfirmed;
+                }
+              }
+              setModalVisible(!modalVisible)
+              handleCallBack(MenuData);
+              //console.log(MenuData);
+            }}
           >
  
             <Text style={styles.textStyle}>Set Recipe</Text>
@@ -129,7 +135,7 @@ export const MenuDay = (props: any) => {
       </View>
     </Modal>
   </View>
-    <View style={styles.slide} onTouchEnd={() => {setModalVisible(true)}}>
+    <View style={[styles.slide,{width:scrWidth*0.8}]} onTouchEnd={() => {setModalVisible(true);setText('')}}>
      <StatusBar/>
       <Text style={styles.slideText}>
         {Day}
@@ -142,20 +148,26 @@ export const MenuDay = (props: any) => {
   );
 }
 const styles = StyleSheet.create({
-    slide: {
+  slide: {
       marginTop: StatusBar.currentHeight || 0,
-
-      backgroundColor:'green',
-      elevation: 8,
-      borderRadius:15,
+      backgroundColor:'white',
+      elevation: 5,
+      borderRadius:20,
+      borderColor: "#20232a",
       alignItems: 'center',
+      shadowRadius:2,
+      shadowOffset:{width:1,height:1},
+      shadowColor: 'rgba(0,0,0, .9)',
       justifyContent: 'center',
+      marginHorizontal:5,
+      marginVertical:5,
       padding:20
       },
-      slideText: {
+  slideText: {
         fontSize: 20,
         fontWeight:'bold'
-      },  centeredView: {
+      },  
+  centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
