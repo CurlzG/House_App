@@ -15,34 +15,32 @@ import useColorScheme from '../hooks/useColorScheme';
 import Menu from '../screens/Menu';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
+import Home from '../screens/Home';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <BottomTabNavigator/>
-      <RootNavigator />
+    <NavigationContainer>
+     <BottomTabNavigator/>
+      
     </NavigationContainer>
   );
 }
-
+  /**  <BottomTabNavigator/> **/
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();  
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
-function RootNavigator() {
+export function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Root" component={TabOneScreen} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false }} />
+      <Stack.Screen name="Menu" component={MenuTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Tab2" component={TabTwoScreen} options={{ headerShown: false }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />    
       </Stack.Group>
@@ -54,31 +52,60 @@ function RootNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-
-
 export function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,        
           headerShown: false
       }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
+        name="Home"
+        component={RootNavigator}
         options={{
-          title: 'TabOne',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Home',
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
       <BottomTab.Screen
-        name="TabTwo"
+        name="Tab2"
         component={TabTwoScreen}
         options={{
-          title: 'TabTwo',
+          title: 'Tab2',
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+
+
+
+    </BottomTab.Navigator>
+  );
+}
+
+export function MenuTabNavigator() {
+  const colorScheme = useColorScheme();
+
+  return (
+    <BottomTab.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme].tint,        
+          headerShown: false
+      }}>
+      <BottomTab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+        }}
+      />
+       <BottomTab.Screen
+        name="Menu"
+        component={Menu}
+        options={{
+          title: 'Menu',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
