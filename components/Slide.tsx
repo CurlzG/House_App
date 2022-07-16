@@ -1,7 +1,9 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text,Dimensions } from 'react-native'
 import { StyleSheet,TouchableHighlight } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
+const scrWidth = Dimensions.get('screen').width;
+const scrHeight = Dimensions.get('screen').height;
 export const Slide = (props: any) => {
   const navigation = useNavigation();
   const { title } = props;
@@ -12,7 +14,7 @@ export const Slide = (props: any) => {
   }
   return (
     
-    <View style={styles.slide} onTouchEnd={() => {ViewCard(title)}} >
+    <View style={[styles.slide,{width:scrWidth*0.95}]} onTouchEnd={() => {ViewCard(title)}} >
       <Text style={styles.slideText }>
         {title}
       </Text>
@@ -21,31 +23,24 @@ export const Slide = (props: any) => {
 }
 const styles = StyleSheet.create({
     slide: {
-        paddingHorizontal: 20,
-        paddingBottom: 10,
-        paddingTop: 30,
-        padding:20,
-        flexBasis: '50%',
-        flex: 1,
-        maxWidth: '50%',
-        display: 'flex',
-        backgroundColor:'#66ff99',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        borderRadius:35,
-        alignItems: 'center',
-        alignContent: 'center',
-        justifyContent: 'center',
-        height: 100,
-        width:130,
-        minWidth:130,
-        
+      paddingHorizontal: 20,
+      paddingBottom: 10,
+      paddingTop: 30,
+      backgroundColor:'white',
+      elevation: 5,
+      borderRadius:20,
+      borderColor: "#20232a",
+      shadowRadius:2,
+      shadowOffset:{width:1,height:1},
+      shadowColor: 'rgba(0,0,0, .9)',
+      marginVertical:10,
+      margin:10,
       },
       slideText: {
         width: '100%',
         textAlign: 'left',
         fontSize: 20,
-        fontWeight:'bold'
+        fontWeight:'bold',
       },
     });
 export default Slide;

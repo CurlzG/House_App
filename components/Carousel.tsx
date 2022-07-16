@@ -1,13 +1,15 @@
 import React from 'react'
-import { View, ScrollView, TouchableOpacity,StyleSheet,Text, Pressable } from 'react-native'
+import { View, ScrollView, TouchableOpacity,StyleSheet,Text, Pressable,Dimensions } from 'react-native'
 import { Stat } from './Stat'
 import { Slide } from './Slide';
 export const Carousel = (props: any) => {
-
+  //Getting Width and Height of the Screens
+  const scrWidth = Dimensions.get('screen').width;
+  const scrHeight = Dimensions.get('screen').height;
+  //Props
   const { items, style } = props;
-  const itemsPerInterval = props.itemsPerInterval === undefined
-    ? 1
-    : props.itemsPerInterval;
+  const itemsPerInterval = props.itemsPerInterval === undefined ? 1 : props.itemsPerInterval;
+  //States
   const [interval, setInterval] = React.useState(1);
   const [intervals, setIntervals] = React.useState(1);
   const [width, setWidth] = React.useState(0);
@@ -47,12 +49,12 @@ export const Carousel = (props: any) => {
   }
 
   return (
-   
-    <View style={styles.container}>
+   //Oerall Container for Carousel
+    <View style={[styles.container,{}]}>
       
       <ScrollView
         horizontal={true}
-        contentContainerStyle={{ ...styles.scrollView, width: `${100 * intervals}%`,borderRadius:35}}
+        contentContainerStyle={[styles.scrollView,{width: `${100 * intervals}%`} ]}
         showsHorizontalScrollIndicator={false}
         
         onContentSizeChange={(w, h) => init(w)}
@@ -125,20 +127,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   container: {
-    width: '100%',
-    backgroundColor: '#fbfbfb',
-    borderColor: '#ebebeb',
-    borderRadius: 8,
     marginTop: 10,
-    shadowOffset: {
-      width: 0,
-      height: 5
-    },
+
+    
   },
   scrollView: {
-    display: 'flex',
-    flexDirection: 'row',
-    overflow: 'hidden',
   },
   bullets: {
     position: 'absolute',

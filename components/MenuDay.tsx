@@ -92,7 +92,7 @@ export const MenuDay = (props: any) => {
         setModalVisible(!modalVisible);
       }}
     >
-      <View style={styles.centeredView}>
+      <View style={[styles.centeredView,{}]}>
         <View style={[styles.modalView,{width:scrWidth*0.9}]}>
           <Text style={styles.modalText}>Select Recipes </Text>
           <Text style={styles.modalText}>Type in the recipe to select it </Text>
@@ -106,7 +106,7 @@ export const MenuDay = (props: any) => {
     <Text style={{padding:20}}> is it <Text style={{fontSize:20,fontWeight:'bold'}} onPress={() => {setSuggestedConfirmed(SuggestionRecipe)}}>  {SuggestionRecipe} </Text> </Text>
     <Text style={{fontWeight:'bold'}}> Selected: {SuggestedConfirmed}</Text>
     </View>
-    <View style={{flexDirection:'row',}}>
+    <View style={{flexDirection:'row'}}>
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => {
@@ -171,7 +171,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
+    
   },
   modalView: {
     margin: 20,

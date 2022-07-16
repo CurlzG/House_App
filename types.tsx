@@ -18,8 +18,11 @@ export type RootStackParamList = {
   Modal: undefined;
   NotFound: undefined;
   Menu:undefined;
+  MenuScreen:undefined;
+  First:undefined;
+  Second:undefined;
+  HomeScreen:undefined;
   Home:undefined;
-  Tab2:undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -28,9 +31,12 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 >;
 
 export type RootTabParamList = {
-  Home: undefined;
-  Tab2: undefined;
+  First:undefined;
+  Second:undefined;
   Menu:undefined;
+  HomeScreen:undefined;
+  MenuScreen:undefined;
+  Home:undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
