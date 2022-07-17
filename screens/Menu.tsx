@@ -3,8 +3,9 @@ import { StyleSheet,FlatList, StatusBar, TouchableOpacity } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { MenuDay } from '../components/MenuDay';
-import { Dimensions } from 'react-native';
+import { Dimensions,Pressable  } from 'react-native';
 import React,{ useEffect, useState  } from 'react';
+import { RootStackScreenProps } from '../types';
 const scrWidth = Dimensions.get('screen').width;
 const scrHeight = Dimensions.get('screen').height;
 const DATA = [
@@ -47,9 +48,10 @@ const DATA = [
 ];
 
 
-export default function Menu() {
+export default function Menu({ navigation }: RootStackScreenProps<'MenuScreen'>) {
   const [newData, setNewData] = useState(DATA);
   const [state, updateState] = React.useState({});
+  const [evelation, updateEve] = React.useState(10);
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
   const updateMenu = (Menu:any) => {
@@ -59,7 +61,12 @@ export default function Menu() {
     forceUpdate();
     //return setNewData(Menu);
   }
-
+  const eve = () => {
+    updateEve(0);
+    console.log(newData);
+    navigation.navigate('ShoppingList',{item:newData});
+    updateEve(10);
+  }
   
   useEffect(()=>{
     
@@ -86,9 +93,14 @@ export default function Menu() {
   return (
     <View style={styles.container}>
       <StatusBar/>
-      <View style={{height:scrHeight*0.10,width:'100%',justifyContent:'center',alignItems:'center',marginTop:40}}>
+      <View style={{height:scrHeight*0.20,width:scrWidth,margin:10,justifyContent:'center',alignItems:'center',marginTop:40}}>
       <Text style={styles.title}>Menu</Text>
       <Text> Click the day, too change the meal for that night</Text>
+      <TouchableOpacity onPress={eve}>
+      <View style={[styles.shopButton,{width:scrWidth*0.8,height:scrHeight*0.05,elevation:evelation}]}>
+        <Text style={{fontWeight:'bold'}}>Get Shopping List </Text>
+      </View>
+      </TouchableOpacity>
       </View>
       <FlatList style={styles.card}
         data={newData}
@@ -130,4 +142,13 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
+  shopButton:{
+    backgroundColor:'white',
+    borderColor:'black',
+   
+    margin:10,
+    alignItems:'center',
+    borderRadius:35,
+    justifyContent: "center",
+  }
 });

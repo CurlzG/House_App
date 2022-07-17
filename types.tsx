@@ -23,6 +23,7 @@ export type RootStackParamList = {
   Second:undefined;
   HomeScreen:undefined;
   Home:undefined;
+  ShoppingList:{item:Object}  | undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -37,6 +38,7 @@ export type RootTabParamList = {
   HomeScreen:undefined;
   MenuScreen:undefined;
   Home:undefined;
+  ShoppingList:{ item:Object} | undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<

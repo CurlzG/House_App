@@ -9,7 +9,7 @@ export const Slide = (props: any) => {
   const { title } = props;
   function ViewCard(title:any){
     if(title.includes('Menu')){
-     return navigation.navigate('Menu');
+     return navigation.navigate('MenuScreen');
     }
   }
   return (

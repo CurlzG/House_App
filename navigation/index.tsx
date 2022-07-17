@@ -17,6 +17,7 @@ import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import Home from '../screens/Home';
 import TabTwoScreen from '../screens/TabTwoScreen';
+import ShoppingList from '../screens/ShoppingList';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -58,5 +59,6 @@ export function MenuNavigator() {
   return (
      <Stack.Navigator>
      <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false }} /> 
+     <Stack.Screen name="ShoppingList" component={ShoppingList} options={{ headerShown: false }}/>
      </Stack.Navigator>  
      )}
