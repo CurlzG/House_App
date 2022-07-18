@@ -12,37 +12,67 @@ const DATA = [
   {
     Day: 'Monday',
     Recipe: 'Fish and Chips',
+    ingredients:{
+      Fish:1,
+      Chips:1,
+    },
     DayGone: false
   },
   {
     Day: 'Tuesday',
     Recipe: 'Pie',
+    ingredients:{
+      Pastry:1,
+      Mince:1,
+    },
     DayGone: false
   },
   {
     Day: 'Wednesday',
     Recipe: '???',
+    ingredients:{
+
+    },
     DayGone: false
   },
   {
     Day: 'Thursday',
     Recipe: 'Ramen',
+    ingredients:{
+      Noodles:1,
+      Chicken:1,
+      Eggs:1,
+    },
     DayGone: false
   },
   {
     Day: 'Friday',
     Recipe: 'Takeaways',
+    ingredients:{
+
+    },
     DayGone: false
   },
   {
     Day: 'Saturday',
     Recipe: 'Tacos',
+    ingredients:{
+      Chips:1,
+      Mince:1,
+      Cheese:1,
+      SourAndCream: 1,
+    },
     DayGone: false
-    
   },
   {
     Day: 'Sunday',
     Recipe: 'Nacho',
+    ingredients:{
+      Chips:1,
+      Mince:1,
+      Cheese:1,
+      SourAndCream: 1,
+    },
     DayGone: false
   },
 ];
@@ -63,7 +93,7 @@ export default function Menu({ navigation }: RootStackScreenProps<'MenuScreen'>)
   }
   const eve = () => {
     updateEve(0);
-    console.log(newData);
+    //console.log(newData);
     navigation.navigate('ShoppingList',{item:newData});
     updateEve(10);
   }
