@@ -57,7 +57,7 @@ export function MenuNavigator() {
   const Stack = createNativeStackNavigator<RootStackParamList>(); 
         
   return (
-     <Stack.Navigator>
+     <Stack.Navigator >
      <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false }} /> 
      <Stack.Screen name="ShoppingList" component={ShoppingList} options={{ headerShown: false }}/>
      </Stack.Navigator>  
