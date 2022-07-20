@@ -1,5 +1,6 @@
 import { StyleSheet, TouchableOpacity,FlatList,StatusBar,Dimensions,Pressable,Modal} from 'react-native';
 import { TextInput } from 'react-native-paper';
+import * as Clipboard from 'expo-clipboard';
 import { Text, View } from '../components/Themed';
 import { RootStackScreenProps } from '../types';
 import React,{ useEffect, useState  } from 'react';
@@ -15,25 +16,46 @@ export default function ShoppingList( route : any, navigation : any ) {
   const [text, setText] = React.useState("");
   const [count, setCount] = useState(0);
   const forceUpdate = React.useCallback(() => updateState({}), []);
-  const initialState = [{id:0,name: '', amount: 0, }];
-  const [list,setList] = React.useState(initialState);
+  const initialState = {id:0,name: '', amount: 0, };
+  const [list,setList] : any = React.useState([{}]);
+  let temp = 0;
   useEffect(()=>{
     let data = item;
+    let it : any = {id:0,name:'item',amount:0};
+    let DATA = []
     for(let i = 0; i < data.length;i++){
-       let it : any = initialState;
+      //console.log("----------------" + i + "-----------");
+;
         if(Object.keys(data[i].ingredients).length != 0){
             for(let j = 0; j  < Object.keys(data[i].ingredients).length; j++){
-              setCount((count) => count + 1);
-              //console.log(count);
+              temp++;
+              setCount(temp);
               let item = Object.keys(data[i].ingredients)[j];
               let amount =Object.values(data[i].ingredients)[j];
-              it[count] = {id:count,name:item,amount:amount};
-              setList(it);             
+              it = {id:temp,name:item,amount:amount};
+              DATA.push(it);                        
             }
+            
         }
+   
     }
+    setList(DATA);
   },[]);
-
+  const copyToClipboard = async () => {
+    let data = item;
+    let shoppinglist = ""; 
+    for(let i = 0; i < data.length;i++){
+      if(Object.keys(data[i].ingredients).length != 0){
+        for(let j = 0; j  < Object.keys(data[i].ingredients).length; j++){
+          let item = (Object.keys(data[i].ingredients))[j];
+          let amount = (Object.values(data[i].ingredients))[j];
+          shoppinglist = shoppinglist + "Item: " + item + "\n" + "Amount: " + amount + "\n";                     
+        }
+        
+    }
+    }
+    await Clipboard.setStringAsync(shoppinglist);
+    };
   return (
     <View style={styles.container}>
       
@@ -66,14 +88,22 @@ export default function ShoppingList( route : any, navigation : any ) {
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => {
-              setCount((count) => count + 1);
-              let it : any = [{}];
+             // setCount((count) => count + 1);
+              let it : any = {id:0,name:'item',amount:0};
               let item = text;
               let setamount = amount;
-              it[count] = {id:count,name:item,amount:setamount};
               //console.log(count);
-              console.log(it);
-              //setList(it);
+              let temp = (count+1);
+              setCount(temp);
+              //it = {id:temp,name:item,amount:amount};
+              it = {id:temp,name:item,amount:setamount};
+              console.log(list);
+              setList([...list, it])
+              
+              forceUpdate();
+
+              setModalVisible(!modalVisible)
+              
             }}
           >
  
@@ -95,6 +125,11 @@ export default function ShoppingList( route : any, navigation : any ) {
       <TouchableOpacity onPress={() => {setModalVisible(true)}}>
       <View style={[styles.shopButton,{width:scrWidth*0.8,height:scrHeight*0.05,elevation:10}]}>
         <Text style={{fontWeight:'bold'}}>Add New Item </Text>
+      </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={copyToClipboard}>
+      <View style={[styles.shopButton,{width:scrWidth*0.8,height:scrHeight*0.05,elevation:10}]}>
+        <Text style={{fontWeight:'bold'}}>Copy Shopping List </Text>
       </View>
       </TouchableOpacity>
       
