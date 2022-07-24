@@ -23,6 +23,8 @@ export type RootStackParamList = {
   Second:undefined;
   HomeScreen:undefined;
   Home:undefined;
+  PawMain: undefined;
+  PawScreen: undefined;
   ShoppingList:{} | undefined;
 };
 
@@ -39,6 +41,8 @@ export type RootTabParamList = {
   MenuScreen:undefined;
   Home:undefined;
   ShoppingList:{} | undefined;
+  PawMain: undefined;
+  PawScreen: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<

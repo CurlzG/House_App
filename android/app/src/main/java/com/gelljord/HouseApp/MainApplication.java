@@ -13,6 +13,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
 import com.gelljord.HouseApp.newarchitecture.MainApplicationReactNativeHost;
+import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
 
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;

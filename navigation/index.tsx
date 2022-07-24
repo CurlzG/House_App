@@ -18,6 +18,7 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import Home from '../screens/Home';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import ShoppingList from '../screens/ShoppingList';
+import OurPaws from '../screens/ourPaws';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -36,8 +37,11 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
           title: 'Menu',
           headerShown: false,
           tabBarIcon: () => <Entypo name="clipboard" style={{marginBottom:-3}} size={30} color="black" />}}/>
+      <BottomTab.Screen name="PawScreen" component={PawNavigator} options={{
+          title: 'Our Paw',
+          headerShown: false,
+          tabBarIcon: () => <FontAwesome name="paw" style={{marginBottom:-3}} size={30} color="black" />}}/>
        
-
     </BottomTab.Navigator>
       
     </NavigationContainer>
@@ -62,3 +66,12 @@ export function MenuNavigator() {
      <Stack.Screen name="ShoppingList" component={ShoppingList} options={{ headerShown: false }}/>
      </Stack.Navigator>  
      )}
+
+     export function PawNavigator() {
+      const Stack = createNativeStackNavigator<RootStackParamList>(); 
+            
+      return (
+         <Stack.Navigator >
+         <Stack.Screen name="PawMain" component={OurPaws} options={{ headerShown: false }} /> 
+         </Stack.Navigator>  
+         )}
