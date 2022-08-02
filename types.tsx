@@ -25,6 +25,7 @@ export type RootStackParamList = {
   Home:undefined;
   PawMain: undefined;
   PawScreen: undefined;
+  ourItem:undefined;
   ShoppingList:{} | undefined;
 };
 
@@ -42,6 +43,7 @@ export type RootTabParamList = {
   Home:undefined;
   ShoppingList:{} | undefined;
   PawMain: undefined;
+  ourItem:undefined;
   PawScreen: undefined;
 };
 

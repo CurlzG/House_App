@@ -1,31 +1,72 @@
-import { StyleSheet, TouchableOpacity,FlatList,Dimensions } from 'react-native';
+import { StyleSheet, TouchableOpacity,FlatList,Dimensions,ActivityIndicator } from 'react-native';
 import React, {useEffect} from 'react';
 import { Text, View } from '../components/Themed';
 import { RootStackScreenProps } from '../types';
 import { getDatabase, ref, onValue, set, child } from 'firebase/database';
-import { getFirestore, setDoc, doc } from 'firebase/firestore';
+import { OurItem } from '../components/ourItems';
+import { getFirestore, setDoc, doc,onSnapshot } from 'firebase/firestore';
 const scrWidth = Dimensions.get('screen').width;
 const scrHeight = Dimensions.get('screen').height;
-export default function OurPaws({}) {
-  const [list, setList]  : any = React.useState([{}]);
-  useEffect(()=>{
-    const db = getDatabase();
-    const reference = ref(db);
-    let DATA  : any = []
-    onValue(reference, (snapshot) => {
-      snapshot.forEach(function(childSnapshot) {
-        var temp = {}; 
-        var thing = childSnapshot.val();
-        for( var it in thing){
-         const reference = ref(db,'/'+childSnapshot.key+"/"+it);
-         onValue(reference,(snapshot)=>{
-          temp = {name: childSnapshot.key, id: it, value:snapshot.val()};
-          DATA.push(temp);
-         })
-        }
-    }); }); 
-    setList(DATA);
-  },[])
+export default function OurPaws(route : any, navigation : any ) {
+  const [list, setList]  : any = React.useState([]);
+  const [isLoading, setLoading] = React.useState(false);
+  useEffect(() =>{
+    console.log("-------STARTING---------");
+    
+    async function data(){
+      console.log("DATA")
+      let DATA  : any = [];
+      let temp : any = [{}];
+      try{
+        const place = getDatabase();
+        const reference = ref(place);
+        return onValue(reference, (snapshot) => {
+          console.log("SnapShot");
+          snapshot.forEach(recSnapShot => {
+          console.log(recSnapShot.key); 
+           for(let i in recSnapShot.val()){
+              console.log(i);
+              const reference = ref(place,'/'+recSnapShot.key+"/"+i);
+              onValue(reference,(rec) => {
+                  
+                  let temp = {name:recSnapShot.key, id:i,value:rec.val()}
+                  DATA.push(temp);
+                  console.log(DATA.length);
+                  setList(DATA);
+              }, {
+                onlyOnce: true
+              })
+            }
+          });
+        
+        
+          console.log(DATA);
+        }, {
+          onlyOnce: true
+        })
+      } catch(error){
+        console.log(error);
+      }
+      
+
+    }
+
+    try{
+      data();
+
+    } catch(error){
+      console.log(error);
+    } 
+
+   console.log("-------ENDING---------");
+  //setList(DATA);
+  return () => {
+   
+    data();
+
+  }
+  },[]);
+
   return (
     <View style={styles.container}>
               <FlatList
@@ -35,26 +76,12 @@ export default function OurPaws({}) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
         renderItem={({item}) =>{
+          
           return(
-            <View style={{padding:10, 
-              elevation:10,
-              margin:20,
-              borderRadius:35,  
-              width:scrWidth*0.7,
-              borderColor: "#20232a",
-              alignItems: 'center',
-              shadowRadius:2,
-              shadowOffset:{width:1,height:1},
-              shadowColor: 'rgba(0,0,0, .9)',
-              justifyContent: 'center',
-              backgroundColor:'white',}}>
-         <Text>{item.name}</Text>
-         <Text>{item.id}</Text>
-         <Text>{item.value.Ground}</Text>
-         </View>
+          <Text>{item.id}</Text>
          );
         }}
-        
+        keyExtractor={(item) => item.key + '' + item.id}
       />
     </View>
   );
@@ -85,4 +112,18 @@ const styles = StyleSheet.create({
     height:scrHeight*0.90,
     width:scrWidth*0.9,
   },
+  cardList:{
+    padding:10, 
+    elevation:10,
+    margin:20,
+    borderRadius:35,  
+    width:scrWidth*0.7,
+    borderColor: "#20232a",
+    alignItems: 'center',
+    shadowRadius:2,
+    shadowOffset:{width:1,height:1},
+    shadowColor: 'rgba(0,0,0, .9)',
+    justifyContent: 'center',
+    backgroundColor:'white',
+  }
 });
