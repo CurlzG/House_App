@@ -1,46 +1,38 @@
-import { StyleSheet, TouchableOpacity,FlatList,Dimensions,ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableOpacity,FlatList,Dimensions,ActivityIndicator,Modal,Pressable, StatusBar} from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
 import React, {useEffect} from 'react';
 import { Text, View } from '../components/Themed';
 import { RootStackScreenProps } from '../types';
-import { getDatabase, ref, onValue, set, child } from 'firebase/database';
+import { getDatabase, ref, onValue, set, child, remove} from 'firebase/database';
 import { OurItem } from '../components/ourItems';
-import { getFirestore, setDoc, doc,onSnapshot } from 'firebase/firestore';
+import { getFirestore, setDoc, addDoc, doc,onSnapshot,collection } from 'firebase/firestore';
 const scrWidth = Dimensions.get('screen').width;
 const scrHeight = Dimensions.get('screen').height;
 export default function OurPaws(route : any, navigation : any ) {
   const [list, setList]  : any = React.useState([]);
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
-  useEffect(() =>{
-    console.log("-------STARTING---------");
-    
+  const [text, setText] = React.useState("");
+  useEffect(() =>{ 
     async function data(){
-      console.log("DATA")
       let DATA  : any = [];
-      let temp : any = [{}];
       try{
         const place = getDatabase();
         const reference = ref(place);
         return onValue(reference, (snapshot) => {
-          console.log("SnapShot");
           snapshot.forEach(recSnapShot => {
-          console.log(recSnapShot.key); 
            for(let i in recSnapShot.val()){
-              console.log(i);
               const reference = ref(place,'/'+recSnapShot.key+"/"+i);
               onValue(reference,(rec) => {
                   
                   let temp = {name:recSnapShot.key, id:i,value:rec.val()}
                   DATA.push(temp);
-                  console.log(DATA.length);
                   setList(DATA);
               }, {
                 onlyOnce: true
               })
             }
           });
-        
-        
-          console.log(DATA);
         }, {
           onlyOnce: true
         })
@@ -57,18 +49,41 @@ export default function OurPaws(route : any, navigation : any ) {
     } catch(error){
       console.log(error);
     } 
-
-   console.log("-------ENDING---------");
-  //setList(DATA);
   return () => {
-   
     data();
-
   }
   },[]);
+ const addToBase =async () => {
+  try {
+    const db = getFirestore();
+    let docRef = {};
+    for(let i = list.length-1; i< list.length;i++){
+      console.log(list[i]);
+      docRef = {id:list[i].id,name:list[i].name,Clouds:list[i].value.Clouds,Ground:list[i].value.Ground,Ground_Level:list[i].value.Ground_Level,
+        Humidity:list[i].value.Humidity,Pressure:list[i].value.Pressure,Sea_Level:list[i].value.Sea_Level,
+        Sunrise:list[i].value.Sunrise,Sunset:list[i].value.Sunset,Temp:list[i].value.Temp,Temp_Max:list[i].value.Temp_Max,
+        Temp_Min:list[i].value.Temp_Min,Time:list[i].value.Time,Visibility:list[i].value.Visibility,Wind_Deg:list[i].value.Wind_Deg,
+        Wind_Gust:list[i].value.Wind_Gust,Wind_Speed:list[i].value.Wind_Speed
+      };
+      const dbRef = collection(db, 'Recordings');
+      await addDoc(dbRef,docRef);
+      const place = getDatabase();
+      const reference = ref(place, "/" +  list[i].name + "/" + list[i].id);
+      await remove(reference);      
+    }
 
+
+
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+ }
   return (
     <View style={styles.container}>
+      <StatusBar/>
+      <Button mode="contained" onPress={addToBase}>
+    Add To Firebase
+  </Button>
               <FlatList
         data={list}
         style={styles.list}
@@ -78,7 +93,13 @@ export default function OurPaws(route : any, navigation : any ) {
         renderItem={({item}) =>{
           
           return(
+            <TouchableOpacity onPress={() => {setModalVisible(true)}}>
+            <View style={styles.cardList}>
           <Text>{item.id}</Text>
+          <Text> {item.name}</Text>
+          <Text> {item.value.Ground}</Text>
+          </View>
+          </TouchableOpacity>
          );
         }}
         keyExtractor={(item) => item.key + '' + item.id}
@@ -93,6 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    marginTop: StatusBar.currentHeight || 0,
   },
   title: {
     fontSize: 20,
@@ -125,5 +147,47 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(0,0,0, .9)',
     justifyContent: 'center',
     backgroundColor:'white',
-  }
+  },  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginRight:20
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    
+  },
 });
