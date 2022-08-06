@@ -6,13 +6,14 @@ import { RootStackScreenProps } from '../types';
 import { getDatabase, ref, onValue, set, child, remove} from 'firebase/database';
 import { OurItem } from '../components/ourItems';
 import { getFirestore, setDoc, addDoc, doc,onSnapshot,collection } from 'firebase/firestore';
+import EditPaws from '../components/EditPaws';
 const scrWidth = Dimensions.get('screen').width;
 const scrHeight = Dimensions.get('screen').height;
 export default function OurPaws(route : any, navigation : any ) {
   const [list, setList]  : any = React.useState([]);
-  const [modalVisible, setModalVisible] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
-  const [text, setText] = React.useState("");
+  const forceUpdate = React.useCallback(() => updateState({}), []);
+  const [state, updateState] = React.useState({});
   useEffect(() =>{ 
     async function data(){
       let DATA  : any = [];
@@ -53,12 +54,28 @@ export default function OurPaws(route : any, navigation : any ) {
     data();
   }
   },[]);
+  const removeItem = (item : any) => {
+    let DATA  : any = [];
+    for(let i = 0; i < list.length;i++){
+      if(item != list[i].id){
+        let temp = {name:list[i].name, id:list[i].id,value:list[i].value}
+        DATA.push(temp);
+      } else {
+        const place = getDatabase();
+        const reference = ref(place, "/" +  list[i].name + "/" + list[i].id);
+        remove(reference);
+      }
+    }
+
+    setList(DATA);
+  }
+
+
  const addToBase =async () => {
   try {
     const db = getFirestore();
     let docRef = {};
-    for(let i = list.length-1; i< list.length;i++){
-      console.log(list[i]);
+    for(let i = 0; i< list.length;i++){
       docRef = {id:list[i].id,name:list[i].name,Clouds:list[i].value.Clouds,Ground:list[i].value.Ground,Ground_Level:list[i].value.Ground_Level,
         Humidity:list[i].value.Humidity,Pressure:list[i].value.Pressure,Sea_Level:list[i].value.Sea_Level,
         Sunrise:list[i].value.Sunrise,Sunset:list[i].value.Sunset,Temp:list[i].value.Temp,Temp_Max:list[i].value.Temp_Max,
@@ -69,11 +86,13 @@ export default function OurPaws(route : any, navigation : any ) {
       await addDoc(dbRef,docRef);
       const place = getDatabase();
       const reference = ref(place, "/" +  list[i].name + "/" + list[i].id);
-      await remove(reference);      
+      await remove(reference);  
+      
+       
     }
-
-
-
+    let DATA  : any = [];
+    setList(DATA);
+    forceUpdate();  
   } catch (e) {
     console.error("Error adding document: ", e);
   }
@@ -93,13 +112,7 @@ export default function OurPaws(route : any, navigation : any ) {
         renderItem={({item}) =>{
           
           return(
-            <TouchableOpacity onPress={() => {setModalVisible(true)}}>
-            <View style={styles.cardList}>
-          <Text>{item.id}</Text>
-          <Text> {item.name}</Text>
-          <Text> {item.value.Ground}</Text>
-          </View>
-          </TouchableOpacity>
+            <EditPaws name={item.name} id={item.id} Ground={item.value.Ground} value={item.value}  handleCallBack={removeItem}/>
          );
         }}
         keyExtractor={(item) => item.key + '' + item.id}

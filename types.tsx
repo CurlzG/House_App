@@ -27,6 +27,7 @@ export type RootStackParamList = {
   PawScreen: undefined;
   ourItem:undefined;
   ShoppingList:{} | undefined;
+  editPaws:undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -44,6 +45,7 @@ export type RootTabParamList = {
   ShoppingList:{} | undefined;
   PawMain: undefined;
   ourItem:undefined;
+  editPaws:undefined;
   PawScreen: undefined;
 };
 

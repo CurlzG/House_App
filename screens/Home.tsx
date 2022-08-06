@@ -11,22 +11,22 @@ import { initializeApp } from 'firebase/app';
 import React, {useState,useEffect} from 'react';
 import { RootTabScreenProps } from '../types';
 import Carousel from '../components/Carousel';
-//import {REACT_APP_apiKey,REACT_APP_authDomain,REACT_APP_databaseURL,REACT_APP_projectId,REACT_APP_storageBucket,REACT_APP_messagingSenderId,REACT_APP_measurementId,REACT_APP_appId} from '@env';
+import { api_key,authDomain,databaseURL,projectId,storageBucket,messagingSenderId,appId,measurementId } from "@env" 
 export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
     useEffect(()=>{
-      //console.log(REACT_APP_apiKey);
+      
     },[])  
 
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDNIWUpmwre58BRMLVQ0uM6YW2kr7m_AVs",
-      authDomain: "testing-paws.firebaseapp.com",
-      databaseURL: "https://testing-paws-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "testing-paws",
-      storageBucket: "testing-paws.appspot.com",
-      messagingSenderId: "7735671338",
-      appId: "1:7735671338:web:5e2222d0402b418d232153",
-      measurementId: "G-50EKEMJQ6V"
+      apiKey: api_key,
+      authDomain: authDomain,
+      databaseURL: databaseURL,
+      projectId: projectId,
+      storageBucket: storageBucket,
+      messagingSenderId: messagingSenderId,
+      appId: appId,
+      measurementId: measurementId
     };
      
      
