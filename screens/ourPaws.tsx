@@ -6,6 +6,7 @@ import { RootStackScreenProps } from '../types';
 import { getDatabase, ref, onValue, set, child, remove} from 'firebase/database';
 import { OurItem } from '../components/ourItems';
 import { getFirestore, setDoc, addDoc, doc,onSnapshot,collection } from 'firebase/firestore';
+import { step1,step2,step3 } from '@env';
 import EditPaws from '../components/EditPaws';
 const scrWidth = Dimensions.get('screen').width;
 const scrHeight = Dimensions.get('screen').height;
@@ -82,7 +83,7 @@ export default function OurPaws(route : any, navigation : any ) {
         Temp_Min:list[i].value.Temp_Min,Time:list[i].value.Time,Visibility:list[i].value.Visibility,Wind_Deg:list[i].value.Wind_Deg,
         Wind_Gust:list[i].value.Wind_Gust,Wind_Speed:list[i].value.Wind_Speed
       };
-      const dbRef = collection(db, 'Recordings');
+      const dbRef = collection(db,step1,step2,step3);
       await addDoc(dbRef,docRef);
       const place = getDatabase();
       const reference = ref(place, "/" +  list[i].name + "/" + list[i].id);

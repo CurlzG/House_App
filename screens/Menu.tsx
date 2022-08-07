@@ -1,6 +1,4 @@
 import { StyleSheet,FlatList, StatusBar, TouchableOpacity } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { MenuDay } from '../components/MenuDay';
 import { Dimensions,Pressable  } from 'react-native';
@@ -8,78 +6,11 @@ import React,{ useEffect, useState  } from 'react';
 import { RootStackScreenProps } from '../types';
 const scrWidth = Dimensions.get('screen').width;
 const scrHeight = Dimensions.get('screen').height;
-const DATA = [
-  {
-    Day: 'Monday',
-    Recipe: 'Fish and Chips',
-    ingredients:{
-      Fish:1,
-      Chips:1,
-    },
-    DayGone: false
-  },
-  {
-    Day: 'Tuesday',
-    Recipe: 'Pie',
-    ingredients:{
-      Pastry:1,
-      Mince:1,
-    },
-    DayGone: false
-  },
-  {
-    Day: 'Wednesday',
-    Recipe: '???',
-    ingredients:{
-
-    },
-    DayGone: false
-  },
-  {
-    Day: 'Thursday',
-    Recipe: 'Ramen',
-    ingredients:{
-      Noodles:1,
-      Chicken:1,
-      Eggs:1,
-    },
-    DayGone: false
-  },
-  {
-    Day: 'Friday',
-    Recipe: 'Takeaways',
-    ingredients:{
-
-    },
-    DayGone: false
-  },
-  {
-    Day: 'Saturday',
-    Recipe: 'Tacos',
-    ingredients:{
-      Chips:1,
-      Mince:1,
-      Cheese:1,
-      SourAndCream: 1,
-    },
-    DayGone: false
-  },
-  {
-    Day: 'Sunday',
-    Recipe: 'Nacho',
-    ingredients:{
-      Chips:1,
-      Mince:1,
-      Cheese:1,
-      SourAndCream: 1,
-    },
-    DayGone: false
-  },
-];
-
+import { getFirestore, getDocs, addDoc, doc,onSnapshot,collection } from 'firebase/firestore';
+import { step1,step2a,step3a } from '@env';
 
 export default function Menu({ navigation }: RootStackScreenProps<'MenuScreen'>) {
-  const [newData, setNewData] = useState(DATA);
+  const [newData, setNewData] = useState<any[]>([]);
   const [state, updateState] = React.useState({});
   const [evelation, updateEve] = React.useState(10);
   const forceUpdate = React.useCallback(() => updateState({}), []);
@@ -89,36 +20,78 @@ export default function Menu({ navigation }: RootStackScreenProps<'MenuScreen'>)
     setNewData(Menu);
     console.log(newData);
     forceUpdate();
-    //return setNewData(Menu);
   }
   const eve = () => {
     updateEve(0);
-    //console.log(newData);
     navigation.navigate('ShoppingList',{item:newData});
     updateEve(10);
   }
   
-  useEffect(()=>{
-    
-    //console.log("Nope");
+  const getData = async () =>{
+    const db = getFirestore();
+    const reference = await getDocs(collection(db,step1,step2a,step3a));
+    let DATA  : any = [];
+    reference.forEach((doc) => {
+      let value = doc.data().Recipe;
+      let docRef = {};
+      if(value == ""){
+        value = "???";
+      }
+      docRef = {Day:doc.id,Recipe:value};
+      DATA.push(docRef);
+    })
+
     let Day = new Date().getDay();
     let newCount = 0;
-    let newDataLess = [];
-    let Data = [];
-    for(let i = 0; i < DATA.length;i++){
-      if(i >= (Day-1)){
-        //console.log(DATA[i-1].Day);
-        Data[newCount] = DATA[i]; 
-        newCount++;
+  let Data : any = [];
+  let count = Day;
+  let i = 0;
+  while(newCount != 7){
+    if(DayToNum(DATA[i].Day) == count){
+      Data[newCount] = DATA[i];
+      newCount++;
+      if(count == 6){
+        count = 0;
+      } else {
+        count++;
       }
-    if(i < (Day-1)){
-      newDataLess[i] = DATA[i];
     }
-      
+    if(i == 6){
+      i = 0;
+    } else {
+      i++;
     }
-    Data = [...Data,...newDataLess];
-    //console.log(Data);
+  }
     setNewData(Data);
+  }
+  /**
+   * Converts the String to Day Count, returns the Day count 0 = Sunday, 6 = Saturday
+   * Returns 100 if error
+   * @param value 
+   * @returns 
+   */
+  const DayToNum = (value : any) => {
+    if(value == "Sunday"){
+      return 0;
+    }else if(value == "Monday"){
+      return 1;
+    }else if(value == "Tuesday"){
+      return 2;
+    }else if(value == "Wednesday"){
+      return 3;
+    }else if(value == "Thursday"){
+      return 4;
+    }else if(value == "Friday"){
+      return 5;
+    }else  if(value == "Saturday"){
+      return 6;
+    } else {
+      return 100;
+    }
+  }
+  useEffect(()=>{
+    getData(); // Gets the Data from Firebase and Reorders depending on the Day
+
   },[])
   return (
     <View style={styles.container}>
@@ -140,8 +113,8 @@ export default function Menu({ navigation }: RootStackScreenProps<'MenuScreen'>)
         contentContainerStyle={{ paddingBottom: 40 }}
         renderItem={({item}) =>{
           return(
-         
-            <MenuDay Day={item.Day} Recipe={item.Recipe} handleCallBack={updateMenu} MenuData={newData}/>
+             
+             <MenuDay Day={item.Day} Recipe={item.Recipe} handleCallBack={updateMenu} MenuData={newData}/> 
           );
         }}
         keyExtractor={item => item.Day}/>
