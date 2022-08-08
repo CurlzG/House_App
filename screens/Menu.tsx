@@ -16,9 +16,7 @@ export default function Menu({ navigation }: RootStackScreenProps<'MenuScreen'>)
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
   const updateMenu = (Menu:any) => {
-    console.log("Update Menu");
     setNewData(Menu);
-    console.log(newData);
     forceUpdate();
   }
   const eve = () => {

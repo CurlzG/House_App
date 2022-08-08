@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text,StatusBar,Dimensions } from 'react-native'
 import { StyleSheet,TouchableHighlight,TouchableOpacity,Modal,Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { TextInput } from 'react-native-paper';
+import { getFirestore, getDocs, addDoc, doc,onSnapshot,collection } from 'firebase/firestore';
+import { step1,step2a} from '@env';
 import Menu from '../screens/Menu';
 export const MenuDay = (props: any) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [DATA, setDATA ] = useState([]);
   const [text, setText] = React.useState("");
   const [SuggestionRecipe,setSuggestionRecipe] = React.useState("---");
   const [SuggestedConfirmed,setSuggestedConfirmed] = React.useState("---");
@@ -14,49 +17,24 @@ export const MenuDay = (props: any) => {
   const { Day,Recipe,MenuData,handleCallBack } = props;
   const scrWidth = Dimensions.get('screen').width;
   const scrHeight = Dimensions.get('screen').height;
-  const DATA = [
-    {
-      Recipe: 'Fish and Chips',
-    },
-    {
-      Recipe: 'Pie',
-    },
-    {
-      Recipe: 'Bacon & Egg Pie',
-      
-    },
-    {
-      Recipe: 'Pasta',
-    },
-    {
-      Recipe: '$10 Pasta',
-    },
-    {
-      Recipe: 'Ramen',
-    },
-    {
-      Recipe: 'Curry',
-    },
-    {
-      Recipe: 'Stir Fry',
-    },
-    {
-      Recipe: 'Chips',
-    },
-    {
-      Recipe: 'Kebabs',
-    },
-    {
-      Recipe: 'Turkish Wraps',
-    },
-    {
-      Recipe: 'Pizza',
-    },
-    {
-      Recipe: 'Lamb Curry',
-    },
-   
-  ];
+
+
+  const getData = async () =>{
+    const db = getFirestore();
+    const reference = await getDocs(collection(db,step1,step2a,step2a));
+    let DATA  : any = [];
+    //console.log("Nope");
+    let docRef = {};
+    reference.forEach((doc) => {
+      docRef= {name: doc.id,Ingredients:doc.data()};
+      DATA.push(docRef);
+    });
+    setDATA(DATA);
+  }
+
+  useEffect(() => {
+    getData();
+  },[])
 
   function updateSuggestion(text:string){
     let Select = "";  
@@ -94,7 +72,7 @@ export const MenuDay = (props: any) => {
     >
       <View style={[styles.centeredView,{}]}>
         <View style={[styles.modalView,{width:scrWidth*0.9}]}>
-          <Text style={styles.modalText}>Select Recipes </Text>
+          <Text style={[styles.modalText,{fontWeight:'bold'}]}>Select Recipes </Text>
           <Text style={styles.modalText}>Type in the recipe to select it </Text>
           <TextInput
              style={{width:scrWidth*0.7}}
